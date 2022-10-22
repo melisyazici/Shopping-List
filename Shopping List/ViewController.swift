@@ -15,6 +15,7 @@ class ViewController: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(clearItems))
         
     }
     
@@ -61,6 +62,11 @@ class ViewController: UITableViewController {
         return shoppingList.contains(where: {
             $0.compare(item, options: .caseInsensitive) == .orderedSame
         })
+    }
+    
+    @objc func clearItems() {
+        shoppingList.removeAll(keepingCapacity: true)
+        tableView.reloadData()
     }
 
 
