@@ -14,7 +14,12 @@ class ViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
+        title = "Shopping List"
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
+        let shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
+        navigationItem.rightBarButtonItems = [addButton, shareButton]
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(clearItems))
         
     }
@@ -62,6 +67,19 @@ class ViewController: UITableViewController {
         return shoppingList.contains(where: {
             $0.compare(item, options: .caseInsensitive) == .orderedSame
         })
+    }
+    
+    @objc func shareTapped() {
+        let list = shoppingList.joined(separator: "\n")
+        if list.isEmpty {
+            let ac = UIAlertController(title: "No items to share", message: "You have no item", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+            return
+        }
+        let vc = UIActivityViewController(activityItems: [list], applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItems?[0]
+        present(vc, animated: true)
     }
     
     @objc func clearItems() {
