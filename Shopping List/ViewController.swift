@@ -36,13 +36,31 @@ class ViewController: UITableViewController {
             self?.addItem(item)
         }
         ac.addAction(addAction)
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(ac, animated: true)
     }
     
     func addItem(_ item: String) {
+        if item.isEmpty {
+            let ac = UIAlertController(title: "Add some item", message: "You didn't add item", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+            return
+        } else if itemAlreadyExist(item: item) {
+            let ac = UIAlertController(title: "Item present", message: "\"\(item)\" is already on your shopping list", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+            return
+        }
         shoppingList.insert(item, at: 0)
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic) // animate the new cell appearing
+    }
+    
+    func itemAlreadyExist(item: String) -> Bool {
+        return shoppingList.contains(where: {
+            $0.compare(item, options: .caseInsensitive) == .orderedSame
+        })
     }
 
 
